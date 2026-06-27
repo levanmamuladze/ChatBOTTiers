@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Οδοντιατρείο Γαλήνη — Χαλάνδρι</title>
+<style>
+  :root{
+    --teal:#0e7c86;
+    --teal-deep:#0a5a62;
+    --mint:#e8f5f4;
+    --slate:#33424a;
+    --hair:#dfe9e8;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#fbfdfd;color:var(--slate);
+    font:16px/1.65 system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--teal)}
+
+  .topline{background:var(--teal-deep);color:#dff3f2;font-size:13px;text-align:center;padding:7px 14px}
+
+  header{padding:58px 22px 40px;text-align:center;background:linear-gradient(180deg,var(--mint),#fbfdfd)}
+  header .mark{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal)}
+  header h1{font-size:clamp(30px,6vw,48px);margin:.2em 0 .15em;color:#1f343a;font-weight:650}
+  header .who{color:#5b6b72;font-size:15px}
+  header p{max-width:520px;margin:14px auto 0;color:#566970}
+
+  main{max-width:840px;margin:0 auto;padding:40px 22px 130px}
+  h2{font-size:23px;color:#23383f;margin:48px 0 14px}
+
+  .care{border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:#fff}
+  .care .row{display:flex;align-items:baseline;gap:14px;padding:15px 18px;border-bottom:1px solid var(--hair)}
+  .care .row:last-child{border-bottom:none}
+  .care .row .nm{font-weight:600;color:#27424a}
+  .care .row .meta{margin-left:auto;text-align:right;white-space:nowrap}
+  .care .row .cost{font-weight:700;color:var(--teal)}
+  .care .row .dur{display:block;font-size:12px;color:#8a999d}
+  .care .row .desc{flex-basis:100%;font-size:13.5px;color:#6c7c81;margin-top:2px}
+
+  .hoursgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .hcard{border:1px solid var(--hair);border-radius:10px;padding:13px 15px;background:#fff;font-size:14px}
+  .hcard b{display:block;color:#27424a;margin-bottom:3px}
+  .hcard.closed{color:#9aa8ad;background:#f6f8f8}
+
+  .nudge{margin-top:46px;padding:18px 22px;background:var(--mint);border-radius:12px;font-size:15px;color:#3f595f}
+  .nudge b{color:var(--teal-deep)}
+
+  /* ---------- booking widget ---------- */
+  #galiniTab{
+    position:fixed;right:20px;bottom:20px;z-index:40;
+    display:flex;align-items:center;gap:9px;
+    padding:13px 18px 13px 15px;border:none;cursor:pointer;
+    background:var(--teal);color:#fff;border-radius:30px;font-size:15px;font-weight:600;
+    box-shadow:0 6px 16px rgba(14,124,134,.35);
+  }
+  #galiniTab:hover{background:var(--teal-deep)}
+  #galiniTab .tooth{font-size:19px}
+
+  #galiniBox{
+    position:fixed;right:20px;bottom:84px;z-index:40;
+    width:min(380px,calc(100vw - 34px));height:540px;max-height:calc(100vh - 120px);
+    background:#fff;border:1px solid var(--hair);border-radius:14px;
+    display:none;flex-direction:column;overflow:hidden;
+    box-shadow:0 18px 50px rgba(20,50,55,.22);
+  }
+  #galiniBox.open{display:flex}
+  .crown{background:var(--teal);color:#fff;padding:13px 15px;display:flex;align-items:center;gap:10px}
+  .crown .title b{font-size:15px;display:block;line-height:1.2}
+  .crown .title span{font-size:12px;opacity:.9}
+  .badge{margin-left:auto;background:#ffd24a;color:#5a4500;font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:5px}
+  .crown .close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.85;margin-left:8px}
+
+  #galiniLog{flex:1;overflow-y:auto;padding:15px 13px;display:flex;flex-direction:column;gap:10px;background:#f7fafa}
+  .turn{max-width:85%;padding:9px 13px;font-size:14.5px;line-height:1.5;border-radius:12px}
+  .turn.bot{background:#fff;border:1px solid var(--hair);align-self:flex-start;border-bottom-left-radius:4px}
+  .turn.usr{background:var(--teal);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .turn.bot strong{color:var(--teal-deep)}
+  .turn ul{margin:.3em 0;padding-left:17px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px;align-self:flex-start;max-width:92%}
+  .chips button{
+    background:#fff;border:1.5px solid var(--teal);color:var(--teal);
+    padding:8px 13px;border-radius:18px;font-size:13.5px;cursor:pointer;font:inherit;line-height:1.2;
+  }
+  .chips button:hover{background:var(--mint)}
+  .chips button small{display:block;font-size:11px;color:#8a999d;font-weight:400}
+  .chips.times button{padding:7px 11px;min-width:62px;text-align:center}
+
+  .ticket{align-self:stretch;background:var(--mint);border:1px dashed var(--teal);border-radius:11px;padding:13px 15px;font-size:14px}
+  .ticket .code{font-size:22px;font-weight:800;color:var(--teal-deep);letter-spacing:1px}
+  .ticket .demo{margin-top:9px;font-size:12.5px;color:#6c7c81;border-top:1px dotted var(--teal);padding-top:8px}
+
+  .pecking{align-self:flex-start;color:#9aa8ad;font-size:13px;padding:3px 6px}
+
+  .askbar{display:flex;gap:8px;padding:10px;border-top:1px solid var(--hair);background:#fff}
+  .askbar input{flex:1;border:1px solid var(--hair);border-radius:19px;padding:10px 14px;font-size:14px;outline:none}
+  .askbar input:focus{border-color:var(--teal)}
+  .askbar button{border:none;background:var(--teal);color:#fff;width:40px;border-radius:50%;font-size:16px;cursor:pointer}
+  .askbar button:disabled{opacity:.4}
+</style>
+</head>
+<body>
+
+<div class="topline">Επείγον πόνος εκτός ωραρίου; SMS στο 694 220 1188</div>
+
+<header>
+  <div class="mark">Χαλάνδρι · με ραντεβού</div>
+  <h1>Οδοντιατρείο Γαλήνη</h1>
+  <div class="who">Δρ. Ελένη Σαρρή, DDS</div>
+  <p>Προληπτική, αισθητική και παιδοδοντία — με ηρεμία, χωρίς πίεση και χωρίς πόνο.</p>
+</header>
+
+<main>
+  <h2>Υπηρεσίες</h2>
+  <div class="care">
+    <div class="row"><span class="nm">Πρώτη επίσκεψη &amp; έλεγχος</span><span class="meta"><span class="cost">30€</span><span class="dur">20 λεπτά</span></span><span class="desc">Κλινικός έλεγχος, συμβουλή και πλάνο θεραπείας.</span></div>
+    <div class="row"><span class="nm">Καθαρισμός &amp; αποτρύγωση</span><span class="meta"><span class="cost">50€</span><span class="dur">30 λεπτά</span></span><span class="desc">Αφαίρεση πλάκας και πέτρας, γυάλισμα. Κάθε 6 μήνες.</span></div>
+    <div class="row"><span class="nm">Σφράγισμα (λευκό)</span><span class="meta"><span class="cost">70€</span><span class="dur">45 λεπτά</span></span><span class="desc">Αισθητικό σφράγισμα ρητίνης στο χρώμα του δοντιού.</span></div>
+    <div class="row"><span class="nm">Λεύκανση δοντιών</span><span class="meta"><span class="cost">180€</span><span class="dur">60 λεπτά</span></span><span class="desc">Στην καρέκλα, ορατό αποτέλεσμα σε μία συνεδρία.</span></div>
+    <div class="row"><span class="nm">Απονεύρωση (ενδοδοντική)</span><span class="meta"><span class="cost">160€</span><span class="dur">90 λεπτά</span></span><span class="desc">Θεραπεία ρίζας για δόντι που πονάει ή έχει φλεγμονή.</span></div>
+  </div>
+
+  <h2>Ωράριο</h2>
+  <div class="hoursgrid">
+    <div class="hcard"><b>Δευτέρα</b>09–14 &amp; 16–20</div>
+    <div class="hcard"><b>Τρίτη</b>09–14 &amp; 16–20</div>
+    <div class="hcard"><b>Τετάρτη</b>09–15 συνεχόμενα</div>
+    <div class="hcard"><b>Πέμπτη</b>09–14 &amp; 16–20</div>
+    <div class="hcard"><b>Παρασκευή</b>09–14</div>
+    <div class="hcard closed"><b>Σάββατο &amp; Κυριακή</b>κλειστά</div>
+  </div>
+
+  <div class="nudge">
+    <b>Κλείστε ραντεβού online</b> από το κουμπί κάτω δεξιά — διαλέγετε υπηρεσία, μέρα και ώρα σε μισό λεπτό.
+    Έχετε απορία; Γράψτε την κι απαντά αμέσως.
+  </div>
+</main>
+
+<button id="galiniTab" aria-label="Κλείστε ραντεβού"><span class="tooth">🦷</span> Κλείσε ραντεβού</button>
+
+<div id="galiniBox" role="dialog" aria-label="Κράτηση ραντεβού">
+  <div class="crown">
+    <div class="title"><b>Γαλήνη — ρεσεψιόν</b><span>κράτηση &amp; ερωτήσεις</span></div>
+    <span class="badge">DEMO</span>
+    <button class="close" id="closeBox" aria-label="Κλείσιμο">×</button>
+  </div>
+  <div id="galiniLog"></div>
+  <form class="askbar" id="askbar">
+    <input id="askField" autocomplete="off" placeholder="Γράψτε μια ερώτηση…">
+    <button type="submit" id="askSend" aria-label="Αποστολή">➤</button>
+  </form>
+</div>
+
+<script>
+(function(){
+  const tab    = document.getElementById('galiniTab');
+  const box    = document.getElementById('galiniBox');
+  const log    = document.getElementById('galiniLog');
+  const field  = document.getElementById('askField');
+  const sendBtn= document.getElementById('askSend');
+
+  // where we are in the booking script; '' means free-text chat
+  let waitingFor = '';   // '' | 'name' | 'phone'
+  const slip = {};       // accumulates the appointment as the user walks through
+  const dayTimes = {};   // iso -> [times], so a day chip already knows its hours
+  const qa = [];         // chat transcript for /api/chat
+  let opened = false;
+
+  const scroll = () => { log.scrollTop = log.scrollHeight; };
+
+  tab.addEventListener('click', () => {
+    box.classList.toggle('open');
+    if(box.classList.contains('open') && !opened){
+      opened = true;
+      bot('Καλώς ήρθατε στη <strong>Γαλήνη</strong> 🦷 Θέλετε να κλείσουμε ραντεβού ή έχετε κάποια ερώτηση;');
+      offer([
+        {text:'📅 Κλείσε ραντεβού', go:beginBooking},
+        {text:'⏰ Ωράριο', ask:'Ποιο είναι το ωράριό σας;'},
+        {text:'💶 Τιμές', ask:'Πόσο κοστίζει ένας καθαρισμός;'}
+      ]);
+    }
+    if(box.classList.contains('open')) field.focus();
+  });
+  document.getElementById('closeBox').addEventListener('click', () => box.classList.remove('open'));
+
+  // markup good enough for what the model sends back: bold, dashed lists, breaks
+  function mdToHtml(text){
+    const safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const lines = safe.split('\n');
+    let html = '', listOpen = false;
+    for(let raw of lines){
+      raw = raw.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+      if(/^\s*[-•]\s+/.test(raw)){
+        if(!listOpen){ html += '<ul>'; listOpen = true; }
+        html += '<li>' + raw.replace(/^\s*[-•]\s+/,'') + '</li>';
+      }else{
+        if(listOpen){ html += '</ul>'; listOpen = false; }
+        if(raw.trim()) html += raw + '<br>';
+      }
+    }
+    if(listOpen) html += '</ul>';
+    return html.replace(/<br>$/,'');
+  }
+
+  function bot(html){
+    const t = document.createElement('div');
+    t.className = 'turn bot';
+    t.innerHTML = html;
+    log.appendChild(t); scroll();
+    return t;
+  }
+  function usr(text){
+    const t = document.createElement('div');
+    t.className = 'turn usr';
+    t.textContent = text;
+    log.appendChild(t); scroll();
+  }
+
+  // reveal a chat answer progressively; a touch slower than the taverna bot on purpose
+  function unspool(node, text){
+    const words = text.split(/(\s+)/);
+    let i = 0;
+    (function step(){
+      i++;
+      node.innerHTML = mdToHtml(words.slice(0, i).join(''));
+      scroll();
+      if(i < words.length) setTimeout(step, 34);
+    })();
+  }
+
+  // render a row of quick-reply chips, then drop them once one is used
+  function offer(items, klass){
+    const tray = document.createElement('div');
+    tray.className = 'chips' + (klass ? ' ' + klass : '');
+    items.forEach(it => {
+      const b = document.createElement('button');
+      b.innerHTML = it.text;
+      b.onclick = () => {
+        tray.remove();
+        if(it.ask){ usr(it.ask); askClinic(it.ask); }
+        else it.go();
+      };
+      tray.appendChild(b);
+    });
+    log.appendChild(tray); scroll();
+    return tray;
+  }
+
+  async function pullJSON(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('slots ' + r.status);
+    return r.json();
+  }
+
+  // ---- the booking script ----
+  async function beginBooking(){
+    const peck = working();
+    try{
+      const menu = await pullJSON('/api/slots');
+      peck.remove();
+      bot('Για ποιον λόγο θα θέλατε να έρθετε;');
+      offer(menu.catalog.map(s => ({
+        text: `${s.name}<small>${s.minutes}′ · ${s.price}€</small>`,
+        go: () => chooseService(s)
+      })));
+    }catch(e){
+      peck.remove();
+      bot('Δεν μπόρεσα να φέρω τις υπηρεσίες αυτή τη στιγμή. Πάρτε μας στο 210 684 9930.');
+    }
+  }
+
+  async function chooseService(svc){
+    usr(svc.name);
+    slip.service = svc.code; slip.serviceName = svc.name; slip.price = svc.price; slip.minutes = svc.minutes;
+    const peck = working();
+    try{
+      const data = await pullJSON('/api/slots?service=' + encodeURIComponent(svc.code));
+      peck.remove();
+      if(!data.days.length){
+        bot('Δεν βλέπω ελεύθερη μέρα μέσα στη βδομάδα γι’ αυτό. Καλέστε στο 210 684 9930 να βρούμε κάτι.');
+        return;
+      }
+      data.days.forEach(d => { dayTimes[d.iso] = d.times; });
+      bot('Ωραία. Ποια μέρα σας βολεύει;');
+      offer(data.days.map(d => ({ text: d.pretty, go: () => chooseDay(d) })));
+    }catch(e){
+      peck.remove();
+      bot('Κάτι κόλλησε με το ημερολόγιο. Δοκιμάστε ξανά σε λίγο.');
+    }
+  }
+
+  function chooseDay(d){
+    usr(d.pretty);
+    slip.day = d.iso; slip.dayPretty = d.pretty;
+    bot('Και τι ώρα;');
+    offer((dayTimes[d.iso] || []).map(t => ({ text: t, go: () => chooseTime(t) })), 'times');
+  }
+
+  function chooseTime(t){
+    usr(t);
+    slip.time = t;
+    waitingFor = 'name';
+    bot('Σε ποιο όνομα να γράψω το ραντεβού;');
+    field.placeholder = 'Το όνομά σας…';
+    field.focus();
+  }
+
+  function takePhone(text){
+    slip.phone = text;
+    waitingFor = '';
+    field.placeholder = 'Γράψτε μια ερώτηση…';
+    bot(`Να επιβεβαιώσω:<br><strong>${slip.serviceName}</strong><br>${slip.dayPretty} στις ${slip.time}<br>${slip.name} · ${slip.phone}`);
+    offer([
+      {text:'✅ Ναι, κλείσ’ το', go: sealBooking},
+      {text:'✏️ Άλλη ώρα', go: () => { waitingFor=''; beginBooking(); }}
+    ]);
+  }
+
+  async function sealBooking(){
+    const peck = working();
+    try{
+      const r = await fetch('/api/book', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          service: slip.service, day: slip.day, time: slip.time,
+          name: slip.name, phone: slip.phone
+        })
+      });
+      const done = await r.json();
+      peck.remove();
+      if(!done.ok){
+        // server bounced it — usually the phone or a slot that just got taken
+        bot(done.why || 'Δεν μπόρεσε να καταχωρηθεί. Δοκιμάστε ξανά.');
+        if(/τηλέφων/i.test(done.why || '')){
+          waitingFor = 'phone';
+          field.placeholder = 'π.χ. 69ΧΧΧΧΧΧΧΧ';
+        }else{
+          beginBooking();
+        }
+        return;
+      }
+      const card = document.createElement('div');
+      card.className = 'ticket';
+      card.innerHTML =
+        `Κλείστηκε! Κωδικός<br><span class="code">${done.code}</span>` +
+        `<br>${done.service} — ${done.when}<br>Διάρκεια ${done.minutes}′ · ${done.price}€` +
+        `<div class="demo">${done.desk_note}</div>`;
+      log.appendChild(card); scroll();
+    }catch(e){
+      peck.remove();
+      bot('Χάλασε η σύνδεση τη στιγμή της κράτησης. Δοκιμάστε ξανά ή πάρτε στο 210 684 9930.');
+    }
+  }
+
+  function working(){
+    const p = document.createElement('div');
+    p.className = 'pecking';
+    p.textContent = '…';
+    log.appendChild(p); scroll();
+    return p;
+  }
+
+  // ---- free-text questions go to the model ----
+  async function askClinic(text){
+    qa.push({role:'user', content:text});
+    const peck = working();
+    try{
+      const r = await fetch('/api/chat', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({bot:'clinic', messages: qa})
+      });
+      const out = await r.json();
+      peck.remove();
+      const answer = out.reply || 'Συγγνώμη, δεν το έπιασα. Το ξαναγράφετε;';
+      qa.push({role:'assistant', content:answer});
+      unspool(bot(''), answer);
+    }catch(e){
+      peck.remove();
+      bot('Δεν έχω σύνδεση αυτή τη στιγμή. Για τα επείγοντα: 210 684 9930.');
+    }
+  }
+
+  document.getElementById('askbar').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = field.value.trim();
+    if(!text) return;
+    usr(text);
+    field.value = '';
+
+    if(waitingFor === 'name'){
+      slip.name = text;
+      waitingFor = 'phone';
+      field.placeholder = 'Κινητό για επιβεβαίωση…';
+      bot('Κι ένα τηλέφωνο για να σας θυμίσουμε το ραντεβού;');
+      return;
+    }
+    if(waitingFor === 'phone'){
+      takePhone(text);
+      return;
+    }
+
+    sendBtn.disabled = true;
+    askClinic(text).finally(() => { sendBtn.disabled = false; field.focus(); });
+  });
+})();
+</script>
+</body>
+</html>
