@@ -6,3 +6,7 @@ __pycache__/
 .venv/
 venv/
 .DS_Store
+
+# Pricing/tiers guide carries internal margins — keep it out of this public repo.
+# Delivered to the client directly; commit a sanitised version only on request.
+docs/
