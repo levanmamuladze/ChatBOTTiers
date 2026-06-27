@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ταβέρνα Το Κύμα — Κορώνι</title>
+<style>
+  :root{
+    --sand:#f4eee1;
+    --ink:#26323a;
+    --sea:#2f6f7e;
+    --coral:#c75b39;
+    --line:#e0d6c2;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--sand);
+    color:var(--ink);
+    font:16px/1.6 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* sans for the chrome, serif stays for prose */
+  .ui{font-family:"Helvetica Neue",Arial,system-ui,sans-serif}
+
+  header.hero{
+    padding:64px 22px 52px;
+    text-align:center;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(47,111,126,.10), transparent 60%),
+      var(--sand);
+    border-bottom:1px solid var(--line);
+  }
+  .kicker{font-family:"Helvetica Neue",Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--coral)}
+  h1{font-size:clamp(34px,7vw,58px);margin:.18em 0 .1em;font-weight:600;letter-spacing:-.5px}
+  .hero p{max-width:540px;margin:.4em auto 0;color:#54606a}
+
+  main{max-width:880px;margin:0 auto;padding:46px 22px 120px}
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px;margin-top:8px}
+  .plate h3{margin:0 0 .35em;font-size:19px}
+  .plate p{margin:0;color:#5a6068;font-size:15px}
+
+  .twoup{display:grid;grid-template-columns:1.2fr 1fr;gap:38px;margin-top:64px}
+  @media(max-width:680px){.twoup{grid-template-columns:1fr;gap:30px}}
+  .twoup h2{font-size:26px;margin:0 0 .5em}
+  .rota{font-family:"Helvetica Neue",Arial,sans-serif;font-size:14.5px;width:100%;border-collapse:collapse}
+  .rota td{padding:7px 0;border-bottom:1px dotted var(--line)}
+  .rota td:last-child{text-align:right;color:var(--sea)}
+  .where{font-family:"Helvetica Neue",Arial,sans-serif;font-size:15px;color:#4a535b}
+  .where a{color:var(--coral)}
+
+  .ribbon{margin:70px 0 0;padding:22px 26px;border-left:4px solid var(--coral);background:#fbf7ee;font-size:15.5px;color:#4a535b}
+
+  /* ---- floating taverna chat ---- */
+  #tavernaLauncher{
+    position:fixed;right:22px;bottom:22px;z-index:50;
+    width:60px;height:60px;border:none;cursor:pointer;
+    border-radius:50% 50% 50% 8px;           /* one corner clipped, like a tag */
+    background:var(--coral);color:#fff;font-size:25px;
+    box-shadow:-4px 8px 22px rgba(38,50,58,.28);
+    transition:transform .15s ease;
+  }
+  #tavernaLauncher:hover{transform:translateY(-2px) rotate(-3deg)}
+  #tavernaLauncher .dot{position:absolute;top:9px;right:9px;width:11px;height:11px;border-radius:50%;background:#7ed957;border:2px solid var(--coral)}
+
+  #tavernaPanel{
+    position:fixed;right:22px;bottom:94px;z-index:50;
+    width:min(370px,calc(100vw - 36px));height:520px;max-height:calc(100vh - 130px);
+    background:#fffdf8;border:1px solid var(--line);border-radius:16px 16px 6px 16px;
+    display:none;flex-direction:column;overflow:hidden;
+    box-shadow:-6px 14px 40px rgba(38,50,58,.30);
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  #tavernaPanel.up{display:flex}
+  .deskbar{background:var(--sea);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+  .deskbar b{font-size:15px}
+  .deskbar small{opacity:.85;font-size:12px;display:block;font-weight:400}
+  .deskbar .x{margin-left:auto;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.8}
+  .deskbar .x:hover{opacity:1}
+
+  #tavernaThread{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:11px;background:#fffdf8}
+  .line{max-width:84%;padding:9px 13px;font-size:14.5px;line-height:1.5;border-radius:13px}
+  .line.them{background:#eef3f3;color:#26323a;align-self:flex-start;border-bottom-left-radius:4px}
+  .line.me{background:var(--coral);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .line.them a{color:var(--sea)}
+  .line p{margin:.2em 0}
+  .line ul{margin:.3em 0;padding-left:18px}
+  .thinking{align-self:flex-start;color:#9aa3a8;font-size:13px;padding:4px 6px}
+  .thinking span{animation:blink 1.1s infinite}
+  .thinking span:nth-child(2){animation-delay:.2s}
+  .thinking span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+  .composer{display:flex;gap:8px;padding:11px;border-top:1px solid var(--line);background:#fffdf8}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:20px;padding:10px 14px;font-size:14px;outline:none;font-family:inherit}
+  .composer input:focus{border-color:var(--sea)}
+  .composer button{border:none;background:var(--sea);color:#fff;width:40px;border-radius:50%;font-size:17px;cursor:pointer}
+  .composer button:disabled{opacity:.45;cursor:default}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker ui">Λιμάνι Κορωνίου · από το 1987</div>
+  <h1>Το Κύμα</h1>
+  <p>Ψαροταβέρνα πάνω στο νερό. Ζυγιστό ψάρι ημέρας, χύμα κρασί από το βαρέλι και θέα στα καΐκια που μπαινοβγαίνουν.</p>
+</header>
+
+<main>
+  <h2 style="font-size:24px;margin:0 0 4px">Αυτά που μας ζητάνε ξανά</h2>
+  <div class="strip">
+    <div class="plate"><h3>Αστακομακαρονάδα</h3><p>Με φρέσκο αστακό από τη βάρκα — θέλει παραγγελία από το πρωί.</p></div>
+    <div class="plate"><h3>Γαριδομακαρονάδα</h3><p>Ούζο, ντοματίνια και μπόλικο πιπέρι. Το αγαπημένο του Σαββατόβραδου.</p></div>
+    <div class="plate"><h3>Χταπόδι στα κάρβουνα</h3><p>Μαλακό μέσα, καπνιστό απ' έξω, πάνω σε φάβα Σαντορίνης.</p></div>
+  </div>
+
+  <div class="twoup">
+    <section>
+      <h2>Πότε ανοιχτά</h2>
+      <table class="rota">
+        <tr><td>Δευτέρα</td><td>ρεπό (όχι το καλοκαίρι)</td></tr>
+        <tr><td>Τρίτη – Πέμπτη</td><td>12:30 – 24:00</td></tr>
+        <tr><td>Παρασκευή</td><td>12:30 – 01:00</td></tr>
+        <tr><td>Σάββατο</td><td>12:00 – 01:00</td></tr>
+        <tr><td>Κυριακή</td><td>12:00 – 24:00</td></tr>
+      </table>
+    </section>
+    <section>
+      <h2>Πού θα μας βρείτε</h2>
+      <p class="where">
+        Παραλιακή 12, στο λιμάνι του Κορωνίου, δίπλα στα καΐκια.<br><br>
+        Κρατήσεις: <a href="tel:+302286071244">22860 71244</a><br>
+        WhatsApp: <a href="https://wa.me/306984127755">698 412 7755</a><br><br>
+        Πάρκινγκ στον δημόσιο χώρο, 3 λεπτά με τα πόδια.
+      </p>
+    </section>
+  </div>
+
+  <div class="ribbon ui">
+    Ρωτήστε ό,τι θέλετε στο κίτρινο κουμπί κάτω δεξιά — ωράριο, μενού, κρατήσεις, αλλεργίες.
+    Απαντά κατευθείαν, στα ελληνικά ή στα αγγλικά.
+  </div>
+</main>
+
+<button id="tavernaLauncher" class="ui" aria-label="Ρωτήστε την ταβέρνα">🍷<span class="dot"></span></button>
+
+<div id="tavernaPanel" role="dialog" aria-label="Συνομιλία με την ταβέρνα">
+  <div class="deskbar">
+    <div><b>Το Κύμα</b><small>συνήθως απαντάμε αμέσως</small></div>
+    <button class="x" id="shutPanel" aria-label="Κλείσιμο">×</button>
+  </div>
+  <div id="tavernaThread"></div>
+  <form class="composer" id="composer">
+    <input id="guestInput" autocomplete="off" placeholder="Ρωτήστε μας κάτι…">
+    <button type="submit" id="fireBtn" aria-label="Αποστολή">↑</button>
+  </form>
+</div>
+
+<script>
+(function(){
+  const launcher = document.getElementById('tavernaLauncher');
+  const panel    = document.getElementById('tavernaPanel');
+  const thread   = document.getElementById('tavernaThread');
+  const field    = document.getElementById('guestInput');
+  const fireBtn  = document.getElementById('fireBtn');
+  const composer = document.getElementById('composer');
+
+  // the running transcript we hand back to the model each turn
+  const transcript = [];
+  let greeted = false;
+
+  launcher.addEventListener('click', () => {
+    panel.classList.toggle('up');
+    if(panel.classList.contains('up')){
+      field.focus();
+      if(!greeted){
+        greeted = true;
+        bubble('them', 'Καλησπέρα! Είμαι από Το Κύμα 🌊 Ρωτήστε με για το ωράριο, το ψάρι της ημέρας, κρατήσεις ή πού θα παρκάρετε.');
+      }
+    }
+  });
+  document.getElementById('shutPanel').addEventListener('click', () => panel.classList.remove('up'));
+
+  // tiny markup: just the bits the bot actually emits — bold, italics, links, breaks, dashed lists
+  function lightMarkup(src){
+    let s = src
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g,'<em>$1</em>')
+      .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    const rows = s.split('\n');
+    const out = [];
+    let inList = false;
+    for(const row of rows){
+      if(/^\s*[-•]\s+/.test(row)){
+        if(!inList){ out.push('<ul>'); inList = true; }
+        out.push('<li>'+row.replace(/^\s*[-•]\s+/,'')+'</li>');
+      } else {
+        if(inList){ out.push('</ul>'); inList = false; }
+        if(row.trim()) out.push('<p>'+row+'</p>');
+      }
+    }
+    if(inList) out.push('</ul>');
+    return out.join('');
+  }
+
+  function bubble(side, text){
+    const el = document.createElement('div');
+    el.className = 'line ' + (side === 'me' ? 'me' : 'them');
+    el.textContent = text;
+    thread.appendChild(el);
+    thread.scrollTop = thread.scrollHeight;
+    return el;
+  }
+
+  // reveal the reply a word at a time, re-rendering markup so formatting snaps in
+  function dripIn(el, text){
+    const chunks = text.split(/(\s+)/);   // keep the whitespace tokens
+    let shown = 0;
+    (function feed(){
+      shown++;
+      el.innerHTML = lightMarkup(chunks.slice(0, shown).join(''));
+      thread.scrollTop = thread.scrollHeight;
+      if(shown < chunks.length) setTimeout(feed, 28 + Math.random()*22);
+    })();
+  }
+
+  async function askTheTaverna(text){
+    transcript.push({role:'user', content:text});
+    const waiting = document.createElement('div');
+    waiting.className = 'thinking';
+    waiting.innerHTML = 'γράφει<span>.</span><span>.</span><span>.</span>';
+    thread.appendChild(waiting);
+    thread.scrollTop = thread.scrollHeight;
+
+    try{
+      const r = await fetch('/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({bot:'restaurant', messages:transcript})
+      });
+      const payload = await r.json();
+      waiting.remove();
+      const reply = payload.reply || 'Δεν κατάλαβα καλά — το ξαναλέτε;';
+      transcript.push({role:'assistant', content:reply});
+      dripIn(bubble('them',''), reply);
+    }catch(err){
+      // network died on the guest's phone, most likely — keep it human
+      waiting.remove();
+      bubble('them','Χάθηκε η σύνδεση για λίγο. Δοκιμάστε ξανά ή πάρτε μας στο 22860 71244.');
+    }
+  }
+
+  composer.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = field.value.trim();
+    if(!text) return;
+    bubble('me', text);
+    field.value = '';
+    fireBtn.disabled = true;
+    askTheTaverna(text).finally(() => { fireBtn.disabled = false; field.focus(); });
+  });
+})();
+</script>
+</body>
+</html>

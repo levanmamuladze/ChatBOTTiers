@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Δείγματα chatbot — τι μπορούμε να φτιάξουμε</title>
+<style>
+  :root{
+    --ink:#1b2330;
+    --paper:#f5f3ee;
+    --coral:#c75b39;
+    --teal:#0e7c86;
+    --muted:#7c8794;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:16px/1.6 system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+  .band{background:var(--ink);color:#eef1f4;padding:62px 22px 70px}
+  .band .wrap{max-width:920px;margin:0 auto}
+  .band .ey{letter-spacing:.2em;text-transform:uppercase;font-size:12px;color:#8ea0b3}
+  .band h1{font-size:clamp(30px,5.5vw,46px);margin:.25em 0 .3em;font-weight:650;letter-spacing:-.5px;max-width:18ch}
+  .band p{color:#aebccb;max-width:60ch;margin:0;font-size:17px}
+
+  .gallery{max-width:920px;margin:-42px auto 0;padding:0 22px 90px;position:relative;z-index:2}
+  .live{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:720px){.live{grid-template-columns:1fr}}
+
+  .demo{background:#fff;border-radius:14px;padding:26px 24px 22px;border:1px solid #e7e2d6;
+    display:flex;flex-direction:column;box-shadow:0 10px 24px rgba(27,35,48,.08)}
+  .demo .tier{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .demo.t1 .tier{color:var(--coral)}
+  .demo.t2 .tier{color:var(--teal)}
+  .demo h2{font-size:22px;margin:6px 0 2px}
+  .demo .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+  .demo .blurb{font-size:15px;color:#3f4a57;margin:0 0 16px}
+
+  .does{list-style:none;padding:0;margin:0 0 18px;font-size:14px;color:#48535f}
+  .does li{padding:5px 0 5px 22px;position:relative}
+  .does li::before{content:'›';position:absolute;left:4px;color:inherit;font-weight:700}
+  .demo.t1 .does li::before{color:var(--coral)}
+  .demo.t2 .does li::before{color:var(--teal)}
+
+  .tryit{font-size:13px;background:#f6f4ee;border-radius:9px;padding:11px 13px;color:#5b6671;margin-bottom:18px}
+  .tryit b{color:#3a4450;display:block;margin-bottom:4px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+  .tryit em{font-style:normal;color:#26323a}
+
+  .open{margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+    text-decoration:none;font-weight:600;font-size:15px;padding:11px 18px;border-radius:24px;color:#fff}
+  .demo.t1 .open{background:var(--coral)}
+  .demo.t2 .open{background:var(--teal)}
+  .open:hover{filter:brightness(.94)}
+
+  .soon-head{margin:54px 0 16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .soon{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:720px){.soon{grid-template-columns:1fr}}
+  .pending{border:1px dashed #cdc7b8;border-radius:12px;padding:20px 20px;background:#faf8f3;color:#9aa1a8}
+  .pending .tier{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b3aa96}
+  .pending h3{margin:6px 0 6px;font-size:18px;color:#7b8590}
+  .pending p{margin:0;font-size:14px;line-height:1.5}
+  .pending .flag{display:inline-block;margin-top:13px;font-size:11px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:#9aa1a8;border:1px solid #d8d2c4;border-radius:5px;padding:3px 8px}
+
+  footer{max-width:920px;margin:0 auto;padding:0 22px 60px;color:var(--muted);font-size:13px}
+  footer .rule{height:1px;background:#e2ddd0;margin-bottom:18px}
+</style>
+</head>
+<body>
+
+<div class="band">
+  <div class="wrap">
+    <div class="ey">Δείγματα προς επίδειξη</div>
+    <h1>Δύο chatbot που δουλεύουν τώρα — όχι screenshots</h1>
+    <p>Φτιαγμένα με εικονικά δεδομένα για να δείτε τη συμπεριφορά: απαντούν, καθοδηγούν,
+       κλείνουν ραντεβού. Δοκιμάστε τα ζωντανά. Τίποτα απ’ ό,τι βλέπετε δεν είναι πραγματικός πελάτης.</p>
+  </div>
+</div>
+
+<div class="gallery">
+  <div class="live">
+
+    <article class="demo t1">
+      <div class="tier">Tier 1 · FAQ bot</div>
+      <h2>Ταβέρνα «Το Κύμα»</h2>
+      <div class="sub">Φουσκωτό μπαλόνι συνομιλίας σε σελίδα εστιατορίου</div>
+      <p class="blurb">Απαντά ελεύθερα στις ερωτήσεις των πελατών αντλώντας από ένα μόνο αρχείο
+        περιεχομένου. Καμία φόρμα, καμία αναμονή — γράφεις, απαντά.</p>
+      <ul class="does">
+        <li>Ωράριο, μενού, κρατήσεις, πάρκινγκ, αλλεργίες</li>
+        <li>Καταλαβαίνει ελληνικά και αγγλικά στην ίδια κουβέντα</li>
+        <li>Παραπέμπει στο τηλέφωνο όταν δεν ξέρει κάτι, αντί να το εφεύρει</li>
+      </ul>
+      <div class="tryit">
+        <b>Δοκιμάστε</b>
+        <em>«Έχετε τραπέζι για 6 το Σάββατο;»</em> ή <em>“Do you have vegetarian options?”</em>
+      </div>
+      <a class="open" href="/restaurant">Άνοιγμα demo →</a>
+    </article>
+
+    <article class="demo t2">
+      <div class="tier">Tier 2 · Wizard bot</div>
+      <h2>Οδοντιατρείο «Γαλήνη»</h2>
+      <div class="sub">Καθοδηγούμενη κράτηση με κουμπιά + ερωτήσεις</div>
+      <p class="blurb">Πάει τον επισκέπτη βήμα-βήμα ως το ραντεβού: υπηρεσία, μέρα, ώρα, στοιχεία,
+        επιβεβαίωση. Οι ώρες παράγονται από το ωράριο, οπότε δεν μένουν ποτέ ξεπερασμένες.</p>
+      <ul class="does">
+        <li>Διαθέσιμες ώρες σε πραγματικό χρόνο, με «πιασμένα» slots</li>
+        <li>Κωδικός κράτησης + προσομοίωση ειδοποίησης στη ρεσεψιόν</li>
+        <li>Απαντά και σε ελεύθερες ερωτήσεις παράλληλα με την κράτηση</li>
+      </ul>
+      <div class="tryit">
+        <b>Δοκιμάστε</b>
+        Πατήστε <em>«Κλείσε ραντεβού»</em> και περάστε όλο το flow — ή ρωτήστε <em>«πονάει η λεύκανση;»</em>
+      </div>
+      <a class="open" href="/clinic">Άνοιγμα demo →</a>
+    </article>
+
+  </div>
+
+  <div class="soon-head">Επόμενα επίπεδα — υπό κατασκευή</div>
+  <div class="soon">
+    <div class="pending">
+      <div class="tier">Tier 3 · Πωλήσεις &amp; lead-gen</div>
+      <h3>Bot που προκρίνει και παραδίδει</h3>
+      <p>Ξεκινάει κουβέντα, καταλαβαίνει τι ψάχνει ο επισκέπτης, μαζεύει στοιχεία επικοινωνίας
+         και περνάει τον καυτό lead σε άνθρωπο — με σύνοψη της συζήτησης.</p>
+      <span class="flag">σύντομα</span>
+    </div>
+    <div class="pending">
+      <div class="tier">Tier 4 · Πλήρης agent</div>
+      <h3>Συνδεδεμένος με τα συστήματά σας</h3>
+      <p>Κρατήσεις σε πραγματικό ημερολόγιο, ενημέρωση CRM, αποστολή email/SMS και πληρωμές —
+         ο bot κάνει τη δουλειά, όχι μόνο τη συζήτηση.</p>
+      <span class="flag">σύντομα</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="rule"></div>
+  Όλα τα στοιχεία (ονόματα, τηλέφωνα, τιμές) είναι εικονικά, αποκλειστικά για επίδειξη.
+  Κάθε bot τρέχει με δικά του δεδομένα και δικό του ύφος.
+</footer>
+
+</body>
+</html>
