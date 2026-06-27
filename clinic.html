@@ -349,6 +349,13 @@
         `<br>${done.service} — ${done.when}<br>Διάρκεια ${done.minutes}′ · ${done.price}€` +
         `<div class="demo">${done.desk_note}</div>`;
       log.appendChild(card); scroll();
+      // don't dead-end on the ticket — keep guiding the visitor
+      bot('Όλα έτοιμα 🌿 Θέλετε κάτι ακόμη;');
+      offer([
+        {text:'📅 Κι άλλο ραντεβού', go: beginBooking},
+        {text:'💬 Μια ερώτηση', go: () => { bot('Φυσικά — πείτε μου την ερώτησή σας 🙂'); field.focus(); }},
+        {text:'👍 Όχι, ευχαριστώ', go: () => bot('Χαρά μας! Καλή σας μέρα και καλή συνέχεια 🦷✨') }
+      ]);
     }catch(e){
       peck.remove();
       bot('Χάλασε η σύνδεση τη στιγμή της κράτησης. Δοκιμάστε ξανά ή πάρτε στο 210 684 9930.');
