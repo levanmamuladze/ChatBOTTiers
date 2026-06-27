@@ -220,7 +220,7 @@
   }
 
   // reveal a chat answer progressively; a touch slower than the taverna bot on purpose
-  function unspool(node, text){
+  function unspool(node, text, done){
     const words = text.split(/(\s+)/);
     let i = 0;
     (function step(){
@@ -228,6 +228,7 @@
       node.innerHTML = mdToHtml(words.slice(0, i).join(''));
       scroll();
       if(i < words.length) setTimeout(step, 34);
+      else if(done) done();
     })();
   }
 
@@ -370,6 +371,20 @@
     return p;
   }
 
+  // after any answer, keep the visitor moving: re-offer the menu plus a way out
+  function followUp(){
+    bot('Θέλετε κάτι ακόμη;');
+    offer([
+      {text:'📅 Κλείσε ραντεβού', go: beginBooking},
+      {text:'⏰ Ωράριο', ask:'Ποιο είναι το ωράριό σας;'},
+      {text:'💶 Τιμές', ask:'Ποιες είναι οι τιμές σας;'},
+      {text:'👍 Όχι, ευχαριστώ', go: thanks}
+    ]);
+  }
+  function thanks(){
+    bot('Σας ευχαριστούμε που επικοινωνήσατε με τη <strong>Γαλήνη</strong> 🦷 Καλή σας μέρα!');
+  }
+
   // ---- free-text questions go to the model ----
   async function askClinic(text){
     qa.push({role:'user', content:text});
@@ -383,7 +398,7 @@
       peck.remove();
       const answer = out.reply || 'Συγγνώμη, δεν το έπιασα. Το ξαναγράφετε;';
       qa.push({role:'assistant', content:answer});
-      unspool(bot(''), answer);
+      unspool(bot(''), answer, followUp);
     }catch(e){
       peck.remove();
       bot('Δεν έχω σύνδεση αυτή τη στιγμή. Για τα επείγοντα: 210 684 9930.');
@@ -406,6 +421,12 @@
     }
     if(waitingFor === 'phone'){
       takePhone(text);
+      return;
+    }
+
+    // a bare "no" to "anything else?" closes things politely, no need to ask the model
+    if(/^(όχι|οχι|no|nope|τίποτα|τιποτα|nothing)[\s!.,)]*$/i.test(text)){
+      thanks();
       return;
     }
 
