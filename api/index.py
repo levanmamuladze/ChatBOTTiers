@@ -14,6 +14,7 @@ import os
 import json
 import time
 import random
+import traceback
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -260,6 +261,9 @@ async def chat(turn: Ask):
             status_code=200,
         )
     except Exception:
+        # Unexpected — log the real cause to the function logs so the friendly
+        # fallback below never hides a genuine bug (e.g. a bad dependency build).
+        traceback.print_exc()
         return JSONResponse(
             {"reply": f"Με συγχωρείτε, κόλλησε κάτι. Πάρτε μας τηλέφωνο στο {phone} 🙏"},
             status_code=200,
